@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>নাটকের কাউন্টডাউন</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    font-family: "Noto Sans Bengali", "Nirmala UI", sans-serif;
+    background: radial-gradient(circle at top, #3b1d5a, #130d20 65%);
+    color: #fff; padding: 20px;
+  }
+  .card {
+    width: 100%; max-width: 520px; text-align: center; padding: 30px 22px;
+    border: 1px solid rgba(255,255,255,.2); border-radius: 28px;
+    background: rgba(255,255,255,.09); box-shadow: 0 18px 60px rgba(0,0,0,.35);
+    backdrop-filter: blur(10px);
+  }
+  .emoji { font-size: 54px; }
+  h1 { margin: 10px 0 8px; font-size: 30px; }
+  .subtitle { color: #e7d8f7; font-size: 17px; margin-bottom: 22px; }
+  .date { font-size: 20px; font-weight: 700; color: #ffd88a; margin: 10px 0 24px; }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .unit { background: rgba(0,0,0,.28); border-radius: 16px; padding: 15px 4px 10px; }
+  .number { display: block; font-size: 30px; font-weight: 800; }
+  .label { font-size: 12px; color: #ddd; }
+  .message { margin: 25px 0 20px; font-size: 17px; line-height: 1.7; }
+  button {
+    border: 0; border-radius: 999px; padding: 13px 22px; font-size: 16px;
+    font-weight: 700; cursor: pointer; margin: 5px;
+  }
+  .share { background: #25d366; color: #082b15; }
+  .copy { background: #fff; color: #251333; }
+  .note { font-size: 12px; color: #cfc3da; margin-top: 18px; line-height: 1.5; }
+</style>
+</head>
+<body>
+  <main class="card">
+    <div class="emoji">🎭</div>
+    <h1>বিদ্রোহী চার্বাক</h1>
+    <div class="subtitle">সবাই মিলে সফল করি আমাদের মঞ্চায়ন</div>
+    <div class="date">📅 ২৫ ডিসেম্বর ২০২৬</div>
+
+    <section class="grid" aria-label="কাউন্টডাউন">
+      <div class="unit"><span class="number" id="days">0</span><span class="label">দিন</span></div>
+      <div class="unit"><span class="number" id="hours">0</span><span class="label">ঘণ্টা</span></div>
+      <div class="unit"><span class="number" id="minutes">0</span><span class="label">মিনিট</span></div>
+      <div class="unit"><span class="number" id="seconds">0</span><span class="label">সেকেন্ড</span></div>
+    </section>
+
+    <div class="message" id="message">🔥 আর বেশি দিন নেই! আমাদের পরিশ্রম, নিষ্ঠা ও দলগত প্রচেষ্টায় সফল হোক এই নাটকের মঞ্চায়ন।</div>
+
+    <button class="share" onclick="shareWhatsApp()">WhatsApp-এ শেয়ার করুন</button>
+    <button class="copy" onclick="copyLink()">লিংক কপি করুন</button>
+
+    <div class="note">এই পেজের কাউন্টডাউন নিজে থেকেই প্রতি সেকেন্ডে আপডেট হবে। WhatsApp গ্রুপে লিংকটি শেয়ার করলে সবাই খুলে দেখতে পারবেন।</div>
+  </main>
+
+<script>
+  // শো-এর সময়: ২৫ ডিসেম্বর ২০২৬, রাত ১২টা (স্থানীয় সময়)
+  const target = new Date(2026, 11, 25, 0, 0, 0).getTime();
+
+  function updateCountdown() {
+    let distance = target - Date.now();
+    if (distance < 0) distance = 0;
+
+    const totalSeconds = Math.floor(distance / 1000);
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    document.getElementById("days").textContent = days;
+    document.getElementById("hours").textContent = String(hours).padStart(2, "0");
+    document.getElementById("minutes").textContent = String(minutes).padStart(2, "0");
+    document.getElementById("seconds").textContent = String(seconds).padStart(2, "0");
+
+    document.getElementById("message").textContent =
+      distance === 0
+      ? "🎉 আজ আমাদের নাটকের শো! সবাই সময়মতো উপস্থিত থাকুন।"
+      : "🔥 আর বেশি দিন নেই! আমাদের পরিশ্রম, নিষ্ঠা ও দলগত প্রচেষ্টায় সফল হোক এই নাটকের মঞ্চায়ন।";
+  }
+
+  function shareWhatsApp() {
+    const text = "🎭 আমাদের নাটকের শো\n📅 ২৫ ডিসেম্বর ২০২৬\n⏳ কাউন্টডাউন দেখতে এই লিংকটি খুলুন: " + location.href;
+    window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank");
+  }
+
+  async function copyLink() {
+    try {
+      await navigator.clipboard.writeText(location.href);
+      alert("লিংক কপি হয়েছে। এখন WhatsApp গ্রুপে পাঠান।");
+    } catch {
+      prompt("এই লিংকটি কপি করুন:", location.href);
+    }
+  }
+
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+</script>
+</body>
+</html>
